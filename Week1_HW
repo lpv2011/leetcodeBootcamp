@@ -1,0 +1,53 @@
+# Contains Duplicate: https://leetcode.com/problems/contains-duplicate/
+class Solution:
+    def containsDuplicate(self, nums: List[int]) -> bool:
+        seen_numbers = set()
+        
+        for num in nums:
+            if num in seen_numbers:
+                return True
+            seen_numbers.add(num)
+        
+        return False
+
+# Video Stitching: https://leetcode.com/problems/video-stitching/
+class Solution:
+    def videoStitching(self, clips: List[List[int]], time: int) -> int:
+        clips.sort(key=lambda x: x[0])  # Sort clips based on start time
+        end, count, i = 0, 0, 0
+
+        while i < len(clips):
+            if clips[i][0] > end:
+                return -1 
+
+            max_end = end
+            while i < len(clips) and clips[i][0] <= end:
+                max_end = max(max_end, clips[i][1])
+                i += 1
+
+            count += 1
+            end = max_end
+
+            if end >= time:
+                return count
+
+        return -1 
+
+# Container with most water: https://leetcode.com/problems/container-with-most-water/
+class Solution:
+    def maxArea(self, height: List[int]) -> int:
+        max_area = 0
+        left = 0
+        right = len(height) - 1
+
+        while left < right:
+            h = min(height[left], height[right])
+            w = right - left
+            max_area = max(max_area, h * w)
+
+            if height[left] < height[right]:
+                left += 1
+            else:
+                right -= 1
+
+        return max_area
