@@ -1,0 +1,77 @@
+#Middle of the Linked List (https://leetcode.com/problems/middle-of-the-linked-list/)
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def middleNode(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        slow = fast = head
+        while fast and fast.next:
+            slow = slow.next
+            fast = fast.next.next
+        return slow
+
+#Reverse Nodes in k-Group (https://leetcode.com/problems/reverse-nodes-in-k-group/)
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def reverseKGroup(self, head: Optional[ListNode], k: int) -> Optional[ListNode]:
+        def reverseSubList(start: ListNode, end: ListNode) -> ListNode:
+            prev, curr = None, start
+            while curr != end:
+                next_node = curr.next
+                curr.next = prev
+                prev = curr
+                curr = next_node
+            return prev
+        
+        count = 0
+        curr = head
+    
+        while count < k and curr:
+            curr = curr.next
+            count += 1
+        
+        if count == k:
+            reversed_head = reverseSubList(head, curr)
+            head.next = self.reverseKGroup(curr, k)
+            return reversed_head
+        return head
+
+#Valid Sudoku(https://leetcode.com/problems/valid-sudoku/)
+from typing import List
+
+class Solution:
+    def isValidSudoku(self, board: List[List[str]]) -> bool:
+        # Check rows
+        for row in board:
+            if not self.is_valid_unit(row):
+                return False
+        
+        # Check columns
+        for col in range(9):
+            column = [board[row][col] for row in range(9)]
+            if not self.is_valid_unit(column):
+                return False
+        
+        # Check sub-boxes
+        for row in range(0, 9, 3):
+            for col in range(0, 9, 3):
+                sub_box = [board[i][j] for i in range(row, row + 3) for j in range(col, col + 3)]
+                if not self.is_valid_unit(sub_box):
+                    return False
+        
+        return True
+    
+    def is_valid_unit(self, unit: List[str]) -> bool:
+        seen = set()
+        for digit in unit:
+            if digit != '.':
+                if digit in seen:
+                    return False
+                seen.add(digit)
+        return True
