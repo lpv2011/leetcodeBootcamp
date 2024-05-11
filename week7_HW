@@ -1,0 +1,85 @@
+# Binary Tree Right Side View: https://leetcode.com/problems/binary-tree-right-side-view/
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+class Solution:
+    def rightSideView(self, root: Optional[TreeNode]) -> List[int]:
+        if not root:
+            return []
+        
+        result = []
+        queue = deque([root])
+        
+        while queue:
+            level_size = len(queue)
+            
+            for i in range(level_size):
+                node = queue.popleft()
+                
+                if i == level_size - 1:
+                    result.append(node.val)
+                
+                if node.left:
+                    queue.append(node.left)
+                if node.right:
+                    queue.append(node.right)
+        
+        return result
+
+#Longest increasing path in a matrix: https://leetcode.com/problems/longest-increasing-path-in-a-matrix/
+class Solution:
+    def longestIncreasingPath(self, matrix: List[List[int]]) -> int:
+        if not matrix:
+            return 0
+        
+        rows, cols = len(matrix), len(matrix[0])
+        directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+        dp = [[0] * cols for _ in range(rows)]
+        
+        def dfs(row, col):
+            if dp[row][col] != 0:
+                return dp[row][col]
+            
+            longest_path = 1
+            for dr, dc in directions:
+                new_row, new_col = row + dr, col + dc
+                if 0 <= new_row < rows and 0 <= new_col < cols and matrix[new_row][new_col] > matrix[row][col]:
+                    longest_path = max(longest_path, 1 + dfs(new_row, new_col))
+                    
+            dp[row][col] = longest_path
+            return longest_path
+        
+        max_length = 0
+        for i in range(rows):
+            for j in range(cols):
+                max_length = max(max_length, dfs(i, j))
+        
+        return max_length
+
+# Kth Smallest Element in a BST: https://leetcode.com/problems/kth-smallest-element-in-a-bst/description/
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def kthSmallest(self, root: Optional[TreeNode], k: int) -> int:
+        def inorder_traversal(node):
+            nonlocal k
+            if not node:
+                return None
+            
+            left_result = inorder_traversal(node.left)
+            if left_result is not None:
+                return left_result
+            
+            k -= 1
+            if k == 0:
+                return node.val
+            
+            return inorder_traversal(node.right)
+        
+        return inorder_traversal(root)
